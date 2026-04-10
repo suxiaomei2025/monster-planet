@@ -2,8 +2,9 @@ import OpenAI from 'openai'
 import { Emotion } from '@/types' 
 
 const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY, 
-  dangerouslyAllowBrowser: true // 注意：在生产环境中建议通过 API Route 调用以保护 API Key
+  apiKey: process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY, 
+  baseURL: process.env.DEEPSEEK_API_KEY ? 'https://api.deepseek.com' : undefined,
+  dangerouslyAllowBrowser: true 
 }) 
 
 export interface ChatResponse { 
@@ -59,7 +60,7 @@ export async function generateMonsterResponse(
 记住：你是用户的创意伙伴和情感支持者！` 
 
   const response = await openai.chat.completions.create({ 
-    model: 'gpt-4o-mini', 
+    model: process.env.DEEPSEEK_API_KEY ? 'deepseek-chat' : 'gpt-4o-mini', 
     messages: [ 
       { role: 'system', content: systemPrompt }, 
       ...messages 
